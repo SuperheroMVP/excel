@@ -13,95 +13,111 @@ require_once 'Classes/PHPExcel/IOFactory.php';
 //require_once 'PHPExcel/Classes/PHPExcel/IOFactory.php';
 $data1 = [];
 $data2 =[];
+$data3 = [];
+$data4 =[];
 if (isset($_POST['postfile'])){
     $allowedFileType = ['application/vnd.ms-excel','text/xls','text/xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-    if(in_array($_FILES["file1"]["type"],$allowedFileType)){
-       if (($_FILES['file1']['name']!="")) {
+
+      if (($_FILES['file1']['name']!=""))     
+      {
+        if(in_array($_FILES["file1"]["type"],$allowedFileType))
+        {
            $file1 = $_FILES['file1']['tmp_name'];
            $objExcel1 = PHPExcel_IOFactory::load($file1);
 
-           //Tạo mảng chứa dữ liệu
-
-
-           foreach ($objExcel1->getWorksheetIterator() as $worksheet) {
+           foreach ($objExcel1->getWorksheetIterator() as $worksheet) 
+           {
 
                $highestrow = $worksheet->getHighestRow();
                $highestcolumn = $worksheet->getHighestColumn();
 
-               for ($i = 0; $i <= $highestrow; $i++) {
+               for ($i = 0; $i <= $highestrow; $i++) 
+               {
                    $name = $worksheet->getCellByColumnAndRow(0, $i)->getValue();
                    $address = $worksheet->getCellByColumnAndRow(1, $i)->getValue();
                    $phone = $worksheet->getCellByColumnAndRow(2, $i)->getValue();
 
-//                if($name!='')
-//                {
-//                    $insertqry="INSERT INTO `tbl_excel1`( `name`, `address`,`phone`) VALUES ('$name','$address','$phone')";
-//                    $insertres = mysqli_query($con,$insertqry);
-//                }
-//                echo $name;
+                   // if($name!='')
+                   // {
+                   //     $insertqry="INSERT INTO `tbl_excel1`( `name`, `address`,`phone`) VALUES ('$name','$address','$phone')";
+                   //     $insertres = mysqli_query($con,$insertqry);
+                   // }
                    $data1 = array("$name", "$address", "$phone");
                    array_push($data2, $data1);
-
-
-               }
-               echo 'data 2';
-               print_r($data2);
-
-           }
-       }
-       else
-       {
-           echo "File 1: You not choose file.</br>";
-       }
-    }
-    else
-    {
-        echo "File 1: Invalid File Type. Upload Excel File.</br>";
-    }
-    echo "lan 2";
-    print_r($data2);
-    if(in_array($_FILES["file1"]["type"],$allowedFileType)) {
-        if (($_FILES['file2']['name'] != "")) {
-
-            $file2 = $_FILES['file2']['tmp_name'];
-            $objExcel2 = PHPExcel_IOFactory::load($file2);
-
-            foreach ($objExcel2->getWorksheetIterator() as $worksheet) {
-                $highestrow = $worksheet->getHighestRow();
-
-                for ($row = 0; $row <= $highestrow; $row++) {
-                    $name = $worksheet->getCellByColumnAndRow(0, $row)->getValue();
-                    $address = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
-                    $phone = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
-                    //                if($name!='')
-                    //                {
-                    //                    $insertqry2="INSERT INTO `tbl_excel2`( `name`, `address`,`phone`) VALUES ('$name','$address','$phone')";
-                    //                    $insertres2=mysqli_query($con,$insertqry2);
-                    //                }
                 }
+
+                echo "upload file 1 success .</br>";
             }
         }
         else
         {
-            echo "File 2: You not choose file.</br>";
+          echo "File 1:Incorrect file format. Upload Excel File.</br>";
         }
-    }
-    else
+      }
+      else
+      {
+          
+          echo "File 1: You not choose file.</br>";
+      }
+
+      if (($_FILES['file2']['name']!=""))     
+      {
+        if(in_array($_FILES["file2"]["type"],$allowedFileType))
+        {
+           $file2 = $_FILES['file2']['tmp_name'];
+           $objExcel2 = PHPExcel_IOFactory::load($file2);
+
+           foreach ($objExcel2->getWorksheetIterator() as $worksheet) 
+           {
+
+               $highestrow = $worksheet->getHighestRow();
+               $highestcolumn = $worksheet->getHighestColumn();
+
+               for ($i = 0; $i <= $highestrow; $i++) 
+               {
+                   $name = $worksheet->getCellByColumnAndRow(0, $i)->getValue();
+                   $address = $worksheet->getCellByColumnAndRow(1, $i)->getValue();
+                   $phone = $worksheet->getCellByColumnAndRow(2, $i)->getValue();
+                   $job = $worksheet->getCellByColumnAndRow(3, $i)->getValue();
+                   // if($name!='')
+                   // {
+                   //     $insertqry2="INSERT INTO `tbl_excel2`( `name`,`address`,`phone`,`job`) VALUES ('$name','$address','$phone','$job')";
+                   //     $insertres = mysqli_query($con,$insertqry2);
+                   // }
+                   $data3 = array("$name", "$address","$phone","$job");
+                   array_push($data4, $data3);
+                }
+
+                echo "upload file 2 success .</br>";
+            }
+        }
+        else
+        {
+          echo "File 2:Incorrect file format. Upload Excel File.</br>";
+        }
+      }
+      else
+      {
+          
+          echo "File 2: You not choose file.</br>";
+      }
+
+  for($f1=0;$f1<count($data2);$f1++)
+  {
+    for($f2=0;$f2< count($data4);$f2++)
     {
-        echo "File 2: Invalid File Type. Upload Excel File.</br>";
+       if(similar_text( $f1[1], $f2[1], $percent))
+       {
+         echo "trung.</br>";
+       }
     }
-
-
+  }
+   
 }
 
-?>
-
-
-<?php
-echo "lan cuoi";
-print_r($data1);
 
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -121,7 +137,7 @@ print_r($data1);
     <input type="submit" name="postfile" value="Tải file lên" style="margin-top: 30px; background-color: #0bd398; border: none; padding: 8px;">
 </form>
 
-<form action="" method="post" style="margin: auto; margin-top: 100px;">
+<form method="post" style="margin: auto; margin-top: 100px;">
     <h4>Chọn cột để so sánh</h4>
     <table border="1" cellpadding="15" style="margin: auto">
         <tr>
@@ -145,9 +161,13 @@ print_r($data1);
             </td>
             <td>
                 <select name="data_2_a" id="data_2_a">
-<!--                    --><?php //foreach ($data2[1] as $key => $data){ ?>
-<!--                        <option value="--><?php //echo $key ?><!--">--><?php //echo $data ?><!--</option>-->
-<!--                    --><?php //} ?>
+                    <?php
+                        foreach ($data4[1] as $key => $data){
+                            ?>
+                               <option value="<?php echo $key ?>"><?php echo $data ?></option>
+                           <?php
+                        }
+                    ?>
                 </select>
             </td>
         </tr>
@@ -155,16 +175,24 @@ print_r($data1);
             <td>Địa chỉ</td>
             <td>
                 <select name="data_1_b" id="data_1_b">
-<!--                    --><?php //foreach ($data1[1] as $key => $data){ ?>
-<!--                        <option value="--><?php //echo $key ?><!--">--><?php //echo $data ?><!--</option>-->
-<!--                    --><?php //} ?>
+                    <?php
+                        foreach ($data2[1] as $key => $data){
+                            ?>
+                               <option value="<?php echo $key ?>"><?php echo $data ?></option>
+                           <?php
+                        }
+                    ?>
                 </select>
             </td>
             <td>
                 <select name="data_2_b" id="data_2_b">
-<!--                    --><?php //foreach ($data2[1] as $key => $data){ ?>
-<!--                        <option value="--><?php //echo $key ?><!--">--><?php //echo $data ?><!--</option>-->
-<!--                    --><?php //} ?>
+                    <?php
+                        foreach ($data4[1] as $key => $data){
+                            ?>
+                               <option value="<?php echo $key ?>"><?php echo $data ?></option>
+                           <?php
+                        }
+                    ?>
                 </select>
             </td>
         </tr>
